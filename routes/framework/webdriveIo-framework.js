@@ -33,6 +33,8 @@ router.post("/generate-webdriverio", (req, res) => {
 
   const result = utils.runCommand(commands)
 
+  utils.changePathToWorkingDirectory()
+
   res.send(result)
 })
 

@@ -1,6 +1,7 @@
 const express = require("express")
 const utils = require("../../utils")
 const shell = require("shelljs")
+const colors = require("colors")
 
 const router = express.Router()
 
@@ -10,31 +11,34 @@ const createFolderStructure = () => {
   shell.mkdir("./VariableFiles")
   shell.mkdir("./ExternalFiles")
   shell.mkdir("./Lib")
-  shell.cd("../../")
+
+  console.log(shell.pwd().stdout.red)
+  utils.changePathToWorkingDirectory()
+  console.log(shell.pwd().stdout.red)
 }
 
 const importDependencies = () => {
   shell.cp(
-    "./backend/bin/robot/res.robot",
-    "./automation-framework/robot-framework/Res"
+    `./bin/robot/res.robot`,
+    "../automation-framework/robot-framework/Res"
   )
 
   shell.cp(
-    "./backend/bin/robot/test.robot",
-    "./automation-framework/robot-framework/TestSuite"
+    `./bin/robot/test.robot`,
+    "../automation-framework/robot-framework/TestSuite"
   )
 
   shell.cp(
-    "./backend/bin/robot/chromedriver.exe",
-    "./automation-framework/robot-framework/TestSuite"
+    `./bin/robot/chromedriver.exe`,
+    "../automation-framework/robot-framework/TestSuite"
   )
 
   shell.cp(
-    "./backend/bin/robot/var.py",
-    "./automation-framework/robot-framework/VariableFiles"
+    `./bin/robot/var.py`,
+    "../automation-framework/robot-framework/VariableFiles"
   )
 
-  shell.cd("./automation-framework/robot-framework/TestSuite")
+  shell.cd("../automation-framework/robot-framework/TestSuite")
 }
 
 router.post("/generate-robot", (req, res) => {
@@ -71,6 +75,7 @@ router.post("/generate-robot", (req, res) => {
   importDependencies()
 
   const result = utils.runCommand(commands)
+  utils.changePathToWorkingDirectory()
 
   res.send(result)
 })

@@ -1,3 +1,4 @@
+const { path } = require("path")
 const shell = require("shelljs")
 
 // creates an automation dir
@@ -8,6 +9,12 @@ const makeDirectory = (frameworkName) => {
 
   shell.mkdir(`./${frameworkName}-framework`)
   shell.cd(`./${frameworkName}-framework`)
+}
+
+// change dir to current working dir
+
+const changePathToWorkingDirectory = () => {
+  shell.cd(__dirname)
 }
 
 // This execute the commands and returns the result
@@ -104,4 +111,5 @@ module.exports = {
   executeCommand: executeCommand,
 
   executeShellScript: executeShellScript,
+  changePathToWorkingDirectory: changePathToWorkingDirectory,
 }

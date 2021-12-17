@@ -29,6 +29,7 @@ router.post("/generate-cypress", (req, res) => {
   }
 
   const result = utils.executeCommand(commands)
+  utils.changePathToWorkingDirectory()
 
   if (result.status) {
     res.send(utils.createResult(result, null))
