@@ -1,0 +1,6 @@
+BROWSER_TYPE= 'Chrome'
+BROWSER_TYPE2= 'FIREFOX'
+BROWSER_TYPE3= 'IE'
+URL= 'https://www.google.com'
+SITEURL3= 'https://zclm-dev.zebra.com'
+SEARCH_TEXTBOX= '//input[@title="Search"]'
