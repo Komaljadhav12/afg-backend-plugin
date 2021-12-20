@@ -5,6 +5,7 @@ const colors = require("colors")
 
 const router = express.Router()
 
+// create a folder structure for robot framework
 const createFolderStructure = () => {
   shell.mkdir("./Res")
   shell.mkdir("./TestSuite")
@@ -17,6 +18,7 @@ const createFolderStructure = () => {
   console.log(shell.pwd().stdout.red)
 }
 
+// import files on structure created
 const importDependencies = () => {
   shell.cp(
     `./bin/robot/res.robot`,
@@ -41,6 +43,18 @@ const importDependencies = () => {
   shell.cd("../automation-framework/robot-framework/TestSuite")
 }
 
+// generate robot framework script
+const robotFrameworkScript = (commands, version, library) => {
+  if (version) {
+    commands.push(`pip install robotframework==${version}`)
+  } else {
+    commands.push(`pip install robotframework`)
+  }
+
+  commands.push(`pip install robotframework-${library}`)
+  commands.push(`python -m robot test.robot`)
+}
+
 router.post("/generate-robot", (req, res) => {
   const { version, framework, reporter, packageManager, library } = req.body
 
@@ -49,25 +63,12 @@ router.post("/generate-robot", (req, res) => {
     packageManager === "pip" &&
     framework === "robotframework" &&
     reporter === "robot-reporter"
-  ) {
-    if (version) {
-      commands.push(`pip install robotframework==${version}`)
-    } else {
-      commands.push(`pip install robotframework`)
-    }
+  )
+    robotFrameworkScript(commands, version, library)
 
-    commands.push(`pip install robotframework-${library}`)
-    commands.push(`python -m robot test.robot`)
-  } else {
-    commands.push(`pip install robotframework`)
-    commands.push(`pip install robotframework-selenium2library`)
-
-    commands.push(`python -m robot test.robot`)
-  }
-  console.log(packageManager)
-
-  console.log(version)
-  console.log(framework)
+  utils.print(packageManager)
+  utils.print(version)
+  utils.print(framework)
 
   utils.makeDirectory("robot")
 
@@ -75,6 +76,7 @@ router.post("/generate-robot", (req, res) => {
   importDependencies()
 
   const result = utils.runCommand(commands)
+
   utils.changePathToWorkingDirectory()
 
   res.send(result)
