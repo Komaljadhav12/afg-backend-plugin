@@ -1,6 +1,19 @@
 const { path } = require("path")
 const shell = require("shelljs")
+const colors = require("colors")
 
+// print on console with color
+// for debugging
+
+const print = (content) => {
+  if (Array.isArray(content)) {
+    content.forEach((ele, i) => {
+      console.log(i + "  : " + ele.red)
+    })
+  } else {
+    console.log("content  : " + content.red)
+  }
+}
 // creates an automation dir
 
 const makeDirectory = (frameworkName) => {
@@ -15,6 +28,7 @@ const makeDirectory = (frameworkName) => {
 
 const changePathToWorkingDirectory = () => {
   shell.cd(__dirname)
+  console.log(__dirname.green)
 }
 
 // This execute the commands and returns the result
@@ -25,13 +39,16 @@ const executeCommand = (arrCommands) => {
 
   for (const command of arrCommands) {
     let error
+    //  to close the cypress runner
     if (command.includes(`open`)) {
       let { stderr } = shell.exec(command, {
         timeout: 30000,
       })
       error = stderr
     } else {
-      let { stderr } = shell.exec(command)
+      let { stderr } = shell.exec(command, {
+        timeout: 180000,
+      })
       error = stderr
     }
     if (error) {
@@ -57,7 +74,7 @@ const executeCommand = (arrCommands) => {
 const runCommand = (arrCommands) => {
   let result = {}
   for (const command of arrCommands) {
-    let { error } = shell.exec(command)
+    let { error } = shell.exec(command, { timeout: 180000 })
 
     if (error) {
       console.log("error :" + error.message)
@@ -104,6 +121,7 @@ const createResult = (error, data) => {
 }
 
 module.exports = {
+  print: print,
   runCommand: runCommand,
   createResult: createResult,
 
